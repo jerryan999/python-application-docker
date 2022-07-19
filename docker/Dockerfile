@@ -11,20 +11,19 @@ RUN pip install --upgrade pip==20.1.1 && \
 
 
 FROM python:3.9.13-slim
-RUN apt-get update -y && apt-get install -y cron
+RUN apt-get update -y && apt-get install -y supervisor
 RUN groupadd -g 999 python && \
     useradd -r -u 999 -m -g python ec2-user
 WORKDIR /home/ec2-user
 
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY --chown=ec2-user:python . ./python-app
 COPY --chown=ec2-user:python --from=python-deps /usr/app/venv /usr/app/venv
 RUN ln -s /usr/app/venv /home/ec2-user/python-app/venv
-# RUN chmod 0644 /etc/cron.d/anydao-cron && chown -R ec2-user:python /var/run
 
 USER 999
-# RUN crontab -u ec2-user /etc/cron.d/anydao-cron
 
 ENV PATH="/home/ec2-user/python-app/venv/bin:$PATH"
 
 WORKDIR /home/ec2-user/python-app
-CMD ["/bin/bash", "start.sh"]
+CMD ["/bin/bash", "start_server.sh"]
