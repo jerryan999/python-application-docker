@@ -1,4 +1,4 @@
-FROM python:3.7.9-slim as  python-deps
+FROM python:3.9.13-slim as  python-deps
 
 RUN apt-get update -y && apt-get install -y gcc
 WORKDIR /usr/app
@@ -10,7 +10,7 @@ RUN pip install --upgrade pip==20.1.1 && \
     rm requirements.txt
 
 
-FROM python:3.7.9-slim
+FROM python:3.9.13-slim
 RUN apt-get update -y && apt-get install -y cron
 RUN groupadd -g 999 python && \
     useradd -r -u 999 -m -g python ec2-user
